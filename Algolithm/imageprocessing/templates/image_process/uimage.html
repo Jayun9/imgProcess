@@ -1,0 +1,119 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>project.ver1</title>
+    <script src="/static/prefixfree.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
+        .font{
+            font-family: 'Nanum Gothic', sans-serif;
+            font-size: 20px;
+        }
+        .table-width.td{
+            width: 10px;
+            height: 20px;
+        }
+        #degree-right{
+            text-align: right;
+        }
+        .table-left{
+            width: 10%;
+        }
+        .table-right{
+            width: 10%;
+        }
+        .table-img{
+            width: 60%;
+        }
+    </style>
+</head>
+<body class="font">
+    <fieldset>
+        <legend><h1>Algolithm</h1></legend>
+        <table class="table-width"> 
+            <form method='POST' action='.' enctype="multipart/form-data">
+            <tr>
+                    {% csrf_token %}
+                    <td>
+                        <label><strong>Image 파일선택</strong><br>
+                        {{ form.as_p }}
+                    </td>
+                    <td>
+                        <label><strong>JSON 파일선택</strong><br>
+                            <input type="file" class='form-control' id='json_file' placeholder="제이슨 이름" name='json_file'></label>
+                    </td>    
+            </tr>
+            <tr>
+                <td>
+                    <pre></pre>
+                    <label><strong>Select</strong><input type="radio" name="sel"> 색상값</label>
+                    <input type="radio" name="sel" autofocus required>분할
+                    <input type="radio" name="sel" autofocus required>합성
+                    <input type="radio" name="sel" autofocus required>회전
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <pre></pre>
+                    <strong>Color</strong><br>
+                    <input type="radio" name="col">RGB<br>
+                    <input type="radio" name="col">HSV<br>
+                    <input type="radio" name="col">YCbCr<br>
+                </td>
+                <td id="degree-right">
+                    <strong>+/- </strong><br>
+                    <select style="height: 26px;" autofocus required>
+                        <optgroup>
+                            <option value="+">+</option>
+                            <option value="-">-</option>
+                        </optgroup>
+                    </select>
+                            
+                </td>
+                <td>
+                    <strong>Rotaion</strong><br>
+                    <input type="number" style="height: 20px;" placeholder="degree°" min="-360" max="360" step="45" autofocus required>
+                    <small></small>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <pre></pre>
+                    <Button style="width: 55px; height: 30px;" class="RUN_BOTTON">RUN</Button>
+                    
+                </td>
+            </tr>
+            </form>
+        </table>
+        <center>
+            <table >
+                <hr>
+                <tr class="table-size"></tr>
+                {% if uploaded_file_url %}
+                    <th class="table-left">Input<br><pre></pre>
+                    <img class="table-img" src="{{ uploaded_file_url }}" alt=""></th>
+                    <th class="table-right">Output<br><pre></pre>
+                    <img class="table-img" src="{{ post.document.url }}"></img> </th>
+                {% else %}
+                    <th class="table-left">Input<br><pre></pre>
+                    <img class="table-img" src="/static/image/image_preview.png" alt=""></th>
+                    <th class="table-right">Output<br><pre></pre>
+                    <img class="table-img" src="/static/image/image_preview.png"></img> </th>
+                {% endif %}
+                </tr>
+            </table>
+        </center>
+        <hr>
+        <button style="width: 55px; height: 30px;" class="Export">Export</button>
+        
+        
+        
+    
+    
+    </fieldset>
+    
+</body>
+</html>

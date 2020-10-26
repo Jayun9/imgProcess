@@ -1,0 +1,257 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <title>오픈이노베이션</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <style>
+
+    .row.content {height: 1500px}
+    
+
+    .sidenav {
+      background-color: #f1f1f1;
+      height: 100%;
+    }
+    .img_custom{
+      max-width: 500px;
+      max-height: 800px;
+    }
+    .image_table_td{
+      text-align: center;
+    }
+    
+
+    footer {
+      background-color: #555;
+      color: white;
+      padding: 15px;
+    }
+    
+
+    @media screen and (max-width: 767px) {
+      .sidenav {
+        height: auto;
+        padding: 15px;
+      }
+      .row.content {height: auto;} 
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container-fluid">
+
+    <div class="row content">
+
+      <div class="col-sm-3 sidenav">
+        <h4>오픈이노베이션</h4><br>
+        <hr style="border: solid 1px rgba(59, 59, 59, 0.226);">
+        
+        <form method="POST" action="." enctype="multipart/form-data">
+          {% csrf_token %}
+        <div class="row">
+          <div class="col-sm-7" style="width: 270px">
+            <strong>Image File</strong>
+            <input class="btn btn-sm btn-default" type="file" id="getfile" accept="image/*" name=image>
+            <strong>Json File</strong>
+            <input class="btn btn-sm btn-default" type="file" accept=".Json" name='json_file'>
+          </div>
+          <div class="col-sm-5" style="margin-left: 0px; padding-left: 0px;">
+            <!-- <script>
+                var slider = $(".slider");
+                slider.change(function(){
+                $(".result").text( slider.val() );
+                });
+            </script> -->
+            <label>brightness</label><br>
+            <label><input type="range" min="-10" max="10" value="0" name="slider" for="result" list="bright" oninput="result.value=slider.value"></label> 
+            <label></label><input style="height: 20px; width: 29px; text-align: right;" class="result" name="result" value="0" for="slider" oninput="slider.value=result.value">%</label> 
+            <datalist id="bright">
+              <option>-10</option>
+              <option>-9</option>
+              <option>-8</option>
+              <option>-7</option>
+              <option>-6</option>
+              <option>-4</option>
+              <option>-3</option>
+              <option>-5</option>
+              <option>-2</option>
+              <option>-1</option>
+              <option>-1</option>
+              <option>0</option>
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+              <option>6</option>
+              <option>7</option>
+              <option>8</option>
+              <option>9</option>
+              <option>10</option>
+            </datalist>
+          </div>
+        </div>
+
+
+        <hr style="border: solid 1px rgba(59, 59, 59, 0.226);">
+
+        <div class="row">
+
+          <div class="col-sm-6">
+
+            <strong>Select</strong><br>
+            <label class="checkbox-inline"><input type="checkbox">분할</label>
+            <label class="checkbox-inline"><input type="checkbox">합성</label>
+            <label class="checkbox-inline"><input type="checkbox">회전</label>
+
+            <strong>Color</strong><br>
+            <label class="radio-inline"><input name="color" type="radio">RGB</label>
+            <label class="radio-inline"><input name="color" type="radio">HSV</label>
+            <label class="radio-inline"><input name="color" type="radio">YCbCr</label>
+          </div>
+
+          <div class="col-sm-6">
+              <label>&ensp; +/-</label>
+              <label>&ensp; Rotaion</label><br>
+              <select style="height: 26px;">
+                <option value="+">+</option>
+                <option value="-">-</option>
+              </select>
+              <input type="number" min="0", max="360", step="45" placeholder="degree°">
+          </div>
+        </div>
+        <hr style="border: solid 1px rgba(59, 59, 59, 0.226);">
+        <div class="row">
+          <div class="col-sm-offset-6 offset col-sm-6" style="text-align: right;">
+            <input type="submit" class="btn btn-primary" name="RUN" value="RUN">
+            <input style="margin-left: 10px;" type="submit" class="btn btn-primary" name="Export" value="Export" id="exportBtn">
+          </div>
+        </div>
+        </form>
+      </div>
+
+      <div class="col-sm-9">
+        <h2>INPUT</h2>
+        
+        <!-- <hr style="border: solid 1px rgba(59, 59, 59, 0.226);"> -->
+        <div>
+          <img style="border:1px solid #ddd ;" src="/static/image/image_preview.png" id="preview" alt="">
+          <script>
+            var file = document.querySelector('#getfile');
+            file.onchange = function (){
+                      
+              var fileList = file.files ;
+
+              // 읽기
+              var reader = new FileReader();
+              reader.readAsDataURL(fileList[0]);
+
+              //로드 한 후
+              reader.onload = function(){
+            
+                var tempImgae = new Image();
+                
+                //잘봐
+                tempImgae.src = reader.result;
+
+                tempImgae.onload = function(){
+
+                  var canvas = document.createElement('canvas');
+                  var canvasContext = canvas.getContext("2d");
+
+                  canvasContext.drawImage(tempImgae, 0, 0);
+
+                  var MAX_WIDTH = 800;
+                  var MAX_HEIGHT = 800;
+                  var width = tempImgae.width;
+                  var height = tempImgae.height;
+
+                  if (width > height) {
+                      if (width > MAX_WIDTH) {
+                          height *= MAX_WIDTH / width;
+                          width = MAX_WIDTH;
+                      }
+                  } 
+                  else {
+                      if (height > MAX_HEIGHT) {
+                          width *= MAX_HEIGHT / height;
+                          height = MAX_HEIGHT;
+                      }
+
+                  }
+                  canvas.width = width;
+                  canvas.height = height;
+
+
+                  canvasContext.drawImage(tempImgae, 0, 0, width, height);
+                  var dataURI = canvas.toDataURL("image/jpeg");
+                  document.querySelector('#preview').src = dataURI;
+                };   
+              };
+            };
+          </script>
+        </div>
+          
+        <table class="table table-bordered text-center">
+          <!-- <hr style="border: solid 1px rgba(59, 59, 59, 0.226);"> -->
+          <h2>OUTPUT</h2>
+          {% if post %}
+          <tr>
+            {% for path in post_path %}
+            <td class="image_table_td"><img class="img_custom" src="{{ path }}" alt="" onload="resize" name="outImg"></td>
+            {% endfor %}
+          </tr>
+          <tr>
+            {% for image in image_list %}
+            <td>{{ image }}</td>
+            {% endfor %}
+          </tr>
+          {% else %}
+          <tr>
+            <td class="image_table_td"><img class="img_custom" src="/static/image/image_preview.png" alt="" onload="resize"></td>
+            <td class="image_table_td"><img class="img_custom" src="/static/image/image_preview.png" alt="" onload="resize"></td>
+            <td class="image_table_td"><img class="img_custom" src="/static/image/image_preview.png" alt="" onload="resize"></td>
+          </tr>
+          {% endif %}
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <footer class="container-fluid">
+    <p>Footer Text</p>
+  </footer>
+
+</body>
+
+<script>
+  document.getElementById('exportBtn').addEventListener('click', (e)=>{
+    e.preventDefault;
+    sendImgPath();
+  });
+
+  function sendImgPath(){
+    const imgs= document.getElementsByName('outImg');
+
+    for
+    {"src":어쩌고}
+
+    const xhr=new XMLHttpRequest();
+    const formData=new FormData(form);
+    xhr.onload = ()=> {};
+    xhr.open('post',url);
+    formData.append('categoryName',name);
+    formData.append('abnormalFigures', percent)
+    xhr.send(formData);
+  }
+
+</script>
+
+</html>
