@@ -5,6 +5,9 @@ from .forms import ImageUploadForm
 from django.conf import settings
 from .image_seg import segment
 import os
+from django.http import HttpResponse
+import simplejson as js
+from django.views.generic import View
 
 def image_process(request):
     return render(request, 'image_process/base.html',{})
@@ -22,11 +25,13 @@ def uimage(request):
         form = UploadImageForm()
         return render(request, 'image_process/uimage.html', {'form' : form})
 
-
-def dface(request):
-    if request.method =='POST':
+class dface(View):
+    def __init__(self):
+        self.post_path = []
+    def post(self,request, *args, **kwargs):
         if request.POST.get('RUN', None) is None:
-            return render(request, 'image_process/algolithm.html')
+            print(self.post_path)
+            return render(request, 'image_process/algolithm.html') 
         else:
             form = ImageUploadForm(request.POST, request.FILES)
             if form.is_valid():
@@ -43,13 +48,12 @@ def dface(request):
                 result_image_path = '/'.join(result_image_path)
                 image_list = os.listdir("{}/{}".format(settings.MEDIA_ROOT_URL,result_image_path))
                 image = []
-                post_path = []
                 for image_name in image_list:
                     if image_name != original_name:
                         image_path = "{}/{}".format(result_image_path,image_name)
-                        post_path.append(image_path)
+                        self.post_path.append(image_path)
                         image.append(image_name)
-                return render(request, 'image_process/algolithm.html', {'post' : post, 'post_path' : post_path, 'image_list' : image})
-    else:
-        form = ImageUploadForm()
-    return render(request, 'image_process/algolithm.html', {'form' : form})
+                return render(request, 'image_process/algolithm.html', {'post' : post, 'post_path' : self.post_path, 'image_list' : image})
+    def get(self, request, *args, **kwargs):
+        return render(request, 'image_process/algolithm.html')
+

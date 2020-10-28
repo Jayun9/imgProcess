@@ -6,7 +6,7 @@ from django.urls import path
 
 app_name = 'imgprocess'
 urlpatterns = [
-    path('', views.dface, name='image_process')
-] 
+    path('', views.dface.as_view()),
+]  
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
