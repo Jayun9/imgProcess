@@ -8,6 +8,8 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  
+  
   <style>
 
     .row.content {height: 1500px}
@@ -52,9 +54,8 @@
       <div class="col-sm-3 sidenav">
         <h4>오픈이노베이션</h4><br>
         <hr style="border: solid 1px rgba(59, 59, 59, 0.226);">
-        
-        <form method="POST" action="." enctype="multipart/form-data">
-          {% csrf_token %}
+        <form method="POST" action="seg/" id="ajaxform" enctype="multipart/form-data">
+        {% csrf_token %}
         <div class="row">
           <div class="col-sm-7" style="width: 270px">
             <strong>Image File</strong>
@@ -130,15 +131,16 @@
         <hr style="border: solid 1px rgba(59, 59, 59, 0.226);">
         <div class="row">
           <div class="col-sm-offset-6 offset col-sm-6" style="text-align: right;">
-            <input type="submit" class="btn btn-primary" name="RUN" value="RUN">
-            <input style="margin-left: 10px;" type="submit" class="btn btn-primary" name="Export" value="Export" id="exportBtn">
+            <input type="submit" class="btn btn-primary" name="RUN" value="RUN" id="RunBtn">
+            <input style="margin-left: 10px;" type="button" class="btn btn-primary" name="Export" value="Export" id="exportBtn">
+          </form>
           </div>
         </div>
-        </form>
       </div>
 
       <div class="col-sm-9">
         <h2>INPUT</h2>
+        <p id="ptag">hello<br></p>
         
         <!-- <hr style="border: solid 1px rgba(59, 59, 59, 0.226);"> -->
         <div>
@@ -205,7 +207,7 @@
           {% if post %}
           <tr>
             {% for path in post_path %}
-            <td class="image_table_td"><img class="img_custom" src="{{ path }}" alt="" onload="resize" name="outImg"></td>
+            <td class="image_table_td"><img class="img_custom" src="{{ path }}" alt="" onload="resize" name='outImg'></td>
             {% endfor %}
           </tr>
           <tr>
@@ -230,8 +232,38 @@
   </footer>
 
 </body>
-
-<!-- <script>
+<!-- 
+<script>
+  $('#RunBtn').click(function() {
+    $.ajax({
+      url:"imgprocess/",
+      success:function(data){
+        var str = '';
+        for(var name in data){
+          str += data[name]
+        }
+        $('#ptag').html(str);
+      }
+    })
+  })
+</script> -->
+<script>
+    function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+                }
+            }
+        }
+    return cookieValue;
+    }
+  var csrftoken = getCookie('csrftoken');
   document.getElementById('exportBtn').addEventListener('click', (e)=>{
     e.preventDefault;
     sendImgPath();
@@ -240,18 +272,15 @@
   function sendImgPath(){
     const imgs= document.getElementsByName('outImg');
 
-    for
-    {"src":어쩌고}
-
     const xhr=new XMLHttpRequest();
-    const formData=new FormData(form);
+    const formData=new FormData();
     xhr.onload = ()=> {};
-    xhr.open('post',url);
-    formData.append('categoryName',name);
-    formData.append('abnormalFigures', percent)
+    xhr.open('post','export/');
+    xhr.setRequestHeader("X_CSRFToken", csrftoken);
+    formData.append('0',imgs[0].src);
     xhr.send(formData);
   }
 
-</script> -->
+</script>
 
 </html>
