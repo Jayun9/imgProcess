@@ -7,9 +7,8 @@ from django.conf import settings
 
 urlpatterns = [ 
     path('admin/', admin.site.urls),
-    path('', im_v.image_process),
-    path('seg/',im_v.img_seg),
-    path('seg/export/',im_v.export) 
+    path('', im_v.img_seg),
+    path('export/',im_v.export), 
 ] 
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

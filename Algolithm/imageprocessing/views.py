@@ -8,6 +8,7 @@ import os
 from django.http import HttpResponse, QueryDict
 import simplejson as js
 from django.views.generic import View
+from django.utils.encoding import smart_str
 
 def image_process(request):
     return render(request, 'image_process/algolithm.html')
@@ -69,14 +70,39 @@ def img_seg(request):
                     image.append(image_name)
             return render(request, 'image_process/algolithm.html', {'post' : post, 'post_path' : post_path, 'image_list' : image})
     else:
-        form = ImageUploadForm()
-        return render(request, 'image_process/algolithm.html',{'form': form})
+        #     # image path 처리
+        # try:
+        #     request_dict = request.POST.dict()
+        #     print(request_dict)
+        #     for _, path in request_dict.items():
+        #         file_name = path.split('/')[-1]
+
+        #         file_path = path.split('/')[3:]
+        #         file_path = '/'.join(file_path)
+        #         path_file = "./{}".format(file_path)
+
+        #         response = HttpResponse(open(path_file, 'rb').read())
+        #         response['Content-Type'] = "application/force_download"
+        #         response['Content-Disposition'] = 'attachment; filename=%s' % smart_str(file_name)
+        #     return response
+        # except:
+        #     return render(request, 'image_process/algolithm.html')
+        return render(request, 'image_process/algolithm.html')
+    
+        
+
 
 def export(request):
+    # image path 처리
     request_dict = request.POST.dict()
-    print(request_dict)
-    query_dict = QueryDict('', mutable=True)
-    query_dict.update(request_dict)
-    print(query_dict)
-    form = ImageUploadForm()
-    return render(request, 'image_process/algolithm.html',{'form': form})
+    for _, path in request_dict.items():
+        file_name = path.split('/')[-1]
+
+        file_path = path.split('/')[3:]
+        file_path = '/'.join(file_path)
+        path_file = "./{}".format(file_path)
+
+        response = HttpResponse(open(path_file, 'rb').read())
+        response['Content-Type'] = "application/force_download"
+        response['Content-Disposition'] = 'attachment; filename=%s' % smart_str(file_name)
+    return response

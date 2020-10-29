@@ -54,7 +54,7 @@
       <div class="col-sm-3 sidenav">
         <h4>오픈이노베이션</h4><br>
         <hr style="border: solid 1px rgba(59, 59, 59, 0.226);">
-        <form method="POST" action="seg/" id="ajaxform" enctype="multipart/form-data">
+        <form method="POST" action="." id="ajaxform" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="row">
           <div class="col-sm-7" style="width: 270px">
@@ -271,13 +271,16 @@
 
   function sendImgPath(){
     const imgs= document.getElementsByName('outImg');
+    const formData=new FormData();
+    for (var i = 0; i < imgs.length; i++){
+      formData.append(i.toString(), imgs[i].src)
+    }
+    
 
     const xhr=new XMLHttpRequest();
-    const formData=new FormData();
     xhr.onload = ()=> {};
-    xhr.open('post','export/');
+    xhr.open('get','/');
     xhr.setRequestHeader("X_CSRFToken", csrftoken);
-    formData.append('0',imgs[0].src);
     xhr.send(formData);
   }
 
