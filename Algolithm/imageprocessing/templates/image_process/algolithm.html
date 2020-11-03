@@ -133,6 +133,7 @@
           <div class="col-sm-offset-6 offset col-sm-6" style="text-align: right;">
             <input type="submit" class="btn btn-primary" name="RUN" value="RUN" id="RunBtn">
             <input style="margin-left: 10px;" type="button" class="btn btn-primary" name="Export" value="Export" id="exportBtn">
+            <a href="#" style="margin-left: 10px;" class="files w3-button" id="KooBtn">koo</a>
           </form>
           </div>
         </div>
@@ -232,58 +233,40 @@
   </footer>
 
 </body>
-<!-- 
 <script>
-  $('#RunBtn').click(function() {
-    $.ajax({
-      url:"imgprocess/",
-      success:function(data){
-        var str = '';
-        for(var name in data){
-          str += data[name]
-        }
-        $('#ptag').html(str);
-      }
-    })
-  })
-</script> -->
-<script>
-    function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-                }
-            }
-        }
-    return cookieValue;
-    }
-  var csrftoken = getCookie('csrftoken');
   document.getElementById('exportBtn').addEventListener('click', (e)=>{
     e.preventDefault;
-    sendImgPath();
-  });
-
-  function sendImgPath(){
     const imgs= document.getElementsByName('outImg');
     const formData=new FormData();
     for (var i = 0; i < imgs.length; i++){
       formData.append(i.toString(), imgs[i].src)
     }
     
-
     const xhr=new XMLHttpRequest();
-    xhr.onload = ()=> {};
-    xhr.open('get','/');
-    xhr.setRequestHeader("X_CSRFToken", csrftoken);
+    xhr.onload = (e) => {
+        const downloadUrl = xhr.getResponseHeader('downloadUrl');
+        location.href = downloadUrl;
+    };
+    xhr.open('post','export/');
     xhr.send(formData);
-  }
+  });
 
+  function sendImgPath(e){
+    const imgs= document.getElementsByName('outImg');
+    const formData=new FormData();
+    for (var i = 0; i < imgs.length; i++){
+      formData.append(i.toString(), imgs[i].src)
+    }
+    
+    const xhr=new XMLHttpRequest();
+    xhr.onload = (e) => {
+        const downloadUrl = xhr.getResponseHeader('downloadUrl');
+        location.href = downloadUrl;
+    };
+    xhr.open('post','export/');
+    xhr.send(formData);
+    
+  }
 </script>
 
 </html>

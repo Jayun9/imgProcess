@@ -95,14 +95,17 @@ def img_seg(request):
 def export(request):
     # image path 처리
     request_dict = request.POST.dict()
-    for _, path in request_dict.items():
-        file_name = path.split('/')[-1]
+    download_url = request_dict['0']
+    print(download_url)
+    response = HttpResponse()
+    response['downloadUrl'] = download_url
+    # for _, path in request_dict.items():   
+    #     file_name = path.split('/')[-1]
 
-        file_path = path.split('/')[3:]
-        file_path = '/'.join(file_path)
-        path_file = "./{}".format(file_path)
+    #     file_path = path.split('/')[3:]
+    #     file_path = '/'.join(file_path)
+    #     path_file = "./{}".format(file_path)
 
-        response = HttpResponse(open(path_file, 'rb').read())
-        response['Content-Type'] = "application/force_download"
-        response['Content-Disposition'] = 'attachment; filename=%s' % smart_str(file_name)
+    #     print(file_name)
+    #     print(path_file)
     return response
